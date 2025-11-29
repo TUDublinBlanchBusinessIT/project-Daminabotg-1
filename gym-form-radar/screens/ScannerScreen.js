@@ -1,5 +1,8 @@
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
+
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Button, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Slider from "@react-native-community/slider";
 
@@ -14,6 +17,21 @@ export default function ScannerScreen({ navigation }) {
     const modifiers = [0.6, 0.8, 1.0, 1.1];
     const finalScore = Math.min(100, baseScore * modifiers[formQuality]);
     return Math.round(finalScore);
+  };
+
+  // Test Firebase Function
+  const testFirebase = async () => {
+    console.log("TEST FIREBASE PRESSED"); // <-- IMPORTANT
+
+    try {
+      await addDoc(collection(db, "test"), {
+        message: "Firebase is working!",
+        timestamp: Date.now(),
+      });
+      console.log("Firebase test write: SUCCESS");
+    } catch (error) {
+      console.log("Firebase test write: ERROR", error);
+    }
   };
 
   return (
@@ -58,9 +76,16 @@ export default function ScannerScreen({ navigation }) {
         {["Poor", "Okay", "Good", "Excellent"][formQuality]}
       </Text>
 
+      {/* Test Firebase Button */}
+      <TouchableOpacity
+        onPress={testFirebase}
+        style={styles.testButton}
+      >
+        <Text style={styles.testButtonText}>TEST FIREBASE</Text>
+      </TouchableOpacity>
+
       {/* Submit Button */}
-      <Button
-        title="Finish Set"
+      <TouchableOpacity
         onPress={() =>
           navigation.navigate("Summary", {
             exercise,
@@ -68,7 +93,10 @@ export default function ScannerScreen({ navigation }) {
             score: calculateScore(),
           })
         }
-      />
+        style={styles.finishButton}
+      >
+        <Text style={styles.finishButtonText}>FINISH SET</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -104,5 +132,27 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
   },
+  testButton: {
+    backgroundColor: "green",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  testButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  finishButton: {
+    backgroundColor: "#007bff",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  finishButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 });
-
