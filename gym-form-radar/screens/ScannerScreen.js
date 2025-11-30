@@ -19,18 +19,20 @@ export default function ScannerScreen({ navigation }) {
     return Math.round(finalScore);
   };
 
-  // Test Firebase Function
-  const testFirebase = async () => {
-    console.log("TEST FIREBASE PRESSED"); // <-- IMPORTANT
+  // Save workout to Firebase
+  const saveWorkout = async () => {
+    console.log("Saving workout...");
 
     try {
-      await addDoc(collection(db, "test"), {
-        message: "Firebase is working!",
+      await addDoc(collection(db, "workouts"), {
+        exercise: exercise,
+        reps: parseInt(reps),
+        score: calculateScore(),
         timestamp: Date.now(),
       });
-      console.log("Firebase test write: SUCCESS");
+      console.log("Workout saved!");
     } catch (error) {
-      console.log("Firebase test write: ERROR", error);
+      console.log("Error saving workout:", error);
     }
   };
 
@@ -76,23 +78,16 @@ export default function ScannerScreen({ navigation }) {
         {["Poor", "Okay", "Good", "Excellent"][formQuality]}
       </Text>
 
-      {/* Test Firebase Button */}
+      {/* Finish Set */}
       <TouchableOpacity
-        onPress={testFirebase}
-        style={styles.testButton}
-      >
-        <Text style={styles.testButtonText}>TEST FIREBASE</Text>
-      </TouchableOpacity>
-
-      {/* Submit Button */}
-      <TouchableOpacity
-        onPress={() =>
+        onPress={() => {
+          saveWorkout();
           navigation.navigate("Summary", {
             exercise,
             reps,
             score: calculateScore(),
-          })
-        }
+          });
+        }}
         style={styles.finishButton}
       >
         <Text style={styles.finishButtonText}>FINISH SET</Text>
@@ -131,18 +126,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
     fontSize: 18,
-  },
-  testButton: {
-    backgroundColor: "green",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: "center",
-  },
-  testButtonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   finishButton: {
     backgroundColor: "#007bff",
