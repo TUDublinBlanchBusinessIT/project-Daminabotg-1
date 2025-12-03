@@ -1,14 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function SummaryScreen({ route }) {
+export default function SummaryScreen({ route, navigation }) {
   const { exercise, reps, score } = route.params;
-
-  const getFeedback = () => {
-    if (score < 40) return "Your form needs improvement. Focus on technique.";
-    if (score < 70) return "Decent form! Work on consistency.";
-    if (score < 90) return "Good form! You're doing well.";
-    return "Excellent form! Keep pushing your limits!";
-  };
 
   return (
     <View style={styles.container}>
@@ -22,10 +16,15 @@ export default function SummaryScreen({ route }) {
         <Text style={styles.value}>{reps}</Text>
 
         <Text style={styles.label}>Score:</Text>
-        <Text style={[styles.value, styles.score]}>{score}/100</Text>
-
-        <Text style={styles.feedback}>{getFeedback()}</Text>
+        <Text style={styles.score}>{score}/100</Text>
       </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("Home")}
+      >
+        <Text style={styles.buttonText}>Back to Home</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -33,41 +32,46 @@ export default function SummaryScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
     justifyContent: "center",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#fff",
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   card: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: "#000",
-    elevation: 5,
+    backgroundColor: "#f1f1f1",
+    padding: 25,
+    borderRadius: 15,
+    marginBottom: 40,
   },
   label: {
-    fontSize: 18,
+    fontSize: 20,
     color: "#555",
     marginTop: 10,
   },
   value: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#111",
+    fontSize: 24,
+    fontWeight: "500",
   },
   score: {
+    fontSize: 32,
+    fontWeight: "bold",
     color: "dodgerblue",
+    marginTop: 15,
   },
-  feedback: {
-    marginTop: 20,
-    fontSize: 18,
-    fontStyle: "italic",
-    textAlign: "center",
-    color: "#333",
+  button: {
+    backgroundColor: "dodgerblue",
+    padding: 18,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
